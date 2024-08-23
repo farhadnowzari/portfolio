@@ -1,5 +1,5 @@
 import PropsBase from './PropsBase';
-import { Link, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 const AboutMeComponent = (props: PropsBase) => {
     return (
