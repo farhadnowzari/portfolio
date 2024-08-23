@@ -1,0 +1,13 @@
+@import './positioning';
+@import './sizing';
+
+body {
+    padding: 0;
+    margin: 0 !important;
+    background: #fafafa;
+}
+
+.container {
+    padding: 5%;
+    border-top: 1px solid #101B3E;
+}

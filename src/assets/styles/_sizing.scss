@@ -1,0 +1,17 @@
+@for $size from 0 through 100 {
+    .h-#{$size} {
+        height: $size * 1%;
+    }
+    .w-#{$size} {
+        width: $size * 1%;
+    }
+    .vh-#{$size} {
+        height: #{$size}vh;
+    }
+    .h-#{$size}-important {
+        height: $size * 1% !important;
+    }
+    .w-#{$size}-important {
+        width: $size * 1% !important;
+    }
+}
