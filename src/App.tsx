@@ -6,6 +6,7 @@ import { Box, createTheme } from "@mui/material";
 import { themeBase } from "./components/themes";
 import SkillsComponent from "./components/SkillsComponent";
 import ContributionsComponent from "./components/ContributionsComponent";
+import ExperiencesComponent from "./components/ExperiencesComponent";
 
 const theme = createTheme(themeBase);
 function App() {
@@ -18,10 +19,8 @@ function App() {
         <Box sx={{ marginInlineStart: "40%" }}>
           <FarhadComponent />
           <SkillsComponent style={{ background: "#E8E6DC", minHeight: "calc(100vh - 80px)" }} />
-          <ContributionsComponent style={{ background: "#E8E6DC", minHeight: "calc(100vh - 80px)" }} />
-          {/* 
-            <ContributionsComponent style={{ background: "#E8E6DC" }} />
-            <ExperiencesComponent style={{ background: "white" }} /> */}
+          <ContributionsComponent style={{ background: "#E8E6DC", minHeight: "calc(100vh - 80px)" }} />          
+          <ExperiencesComponent style={{ background: "#E8E6DC", minHeight: "calc(100vh - 80px)" }} />
           <AboutMeComponent
             style={{ background: "#E8E6DC", minHeight: "calc(100vh - 80px)" }}
           />

@@ -12,6 +12,9 @@ const themeBase: ThemeOptions = {
     h5: {
         fontSize: "20px"
     },
+    body1: {
+      fontSize: "15px"
+    },
     allVariants: {
         color: "#101B3E"
     }
@@ -26,6 +29,9 @@ const themeBase: ThemeOptions = {
 
 const stickyInformationTheme: ThemeOptions = {
   typography: {
+    body1: {
+      fontSize: "25px",
+    },
     allVariants: {
       color: "#A2A096",
     },

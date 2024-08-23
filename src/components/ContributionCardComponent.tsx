@@ -5,8 +5,9 @@ import {
   Typography,
   CardActionArea,
   CardActions,
+  Chip,
 } from "@mui/material";
-import { GitHub, YouTube } from "@mui/icons-material";
+import { GitHub, YouTube, TextSnippet } from "@mui/icons-material";
 import { Box } from "@mui/system";
 
 interface ContributionCardProps {
@@ -30,6 +31,7 @@ const ContributionCardComponent = (props: ContributionCardProps) => {
             <Box display="flex" gap="5px" alignItems="center">
               {props.type === "github" && <GitHub />}
               {props.type === "youtube" && <YouTube style={{ color: "red" }} />}
+              {props.type === "medium" && <TextSnippet />}
               {props.title}
             </Box>
           </Typography>
@@ -37,7 +39,7 @@ const ContributionCardComponent = (props: ContributionCardProps) => {
         </CardContent>
         { props.meta && <CardActions>
           {props.meta.map((meta, index) => (
-            <Typography key={index} variant="caption">{meta}</Typography>
+            <Chip size="small" sx={{ fontSize: "15px", color: "#fff" }} color="primary" key={index} label={meta}></Chip>
           ))}
         </CardActions> }
       </CardActionArea>
