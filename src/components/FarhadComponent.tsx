@@ -119,15 +119,16 @@ const FarhadComponent = () => {
                   architecture background. I am a team player and a boost of
                   energy when added to any teams!
                 </Typography>
+                <Button
+                  href="/assets/Farhad Nowzari CV.pdf"
+                  target="_blank"
+                  download="Farhad Nowzari CV.pdf"
+                  variant="outlined"
+                  sx={{ marginTop: "20px" }}
+                >
+                  <DownloadOutlined /> Download My CV
+                </Button>
               </Box>
-              <Button
-                href="/assets/Farhad Nowzari CV.pdf"
-                target="_blank"
-                download="Farhad Nowzari CV.pdf"
-                variant="outlined"
-              >
-                <DownloadOutlined /> Download My CV
-              </Button>
             </Box>
           </Box>
         </ThemeProvider>
