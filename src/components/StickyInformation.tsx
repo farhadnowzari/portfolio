@@ -16,6 +16,7 @@ import {
 
 import { deepmerge } from "@mui/utils";
 import { stickyInformationTheme, themeBase } from "./themes";
+import PortfolioBarComponent from "./PortfolioBarComponent";
 
 const theme = createTheme(deepmerge(themeBase, stickyInformationTheme));
 
@@ -29,6 +30,7 @@ const StickyInformation = () => {
         padding="5%"
         boxSizing="border-box"
       >
+        <PortfolioBarComponent />
         <Typography style={{ marginTop: "auto" }}>My name is</Typography>
         <Typography variant="h1" fontSize="60px" margin="0" padding="0">
           Farhad Nowzari

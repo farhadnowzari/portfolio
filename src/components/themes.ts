@@ -1,5 +1,7 @@
 import { ThemeOptions } from "@mui/material";
 
+const navyBlue = "#101B3E";
+
 const themeBase: ThemeOptions = {
   typography: {
     fontSize: 20,
@@ -16,7 +18,7 @@ const themeBase: ThemeOptions = {
       fontSize: "15px"
     },
     allVariants: {
-        color: "#101B3E"
+        color: navyBlue
     }
   },
   palette: {
@@ -28,6 +30,25 @@ const themeBase: ThemeOptions = {
 };
 
 const stickyInformationTheme: ThemeOptions = {
+  components: {
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: "#f0f0f0",
+        }
+      }
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          color: navyBlue,
+          gap: "10px",
+          fontSize: "20px",
+          minWidth: "250px",
+        }
+      }
+    },
+  },
   typography: {
     body1: {
       fontSize: "25px",

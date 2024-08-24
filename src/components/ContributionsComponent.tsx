@@ -6,7 +6,7 @@ import { Typography } from "@mui/material";
 import { Masonry } from "@mui/lab";
 const ContributionsComponent = (props: PropsBase) => {
   return (
-    <div style={props.style} className="container">
+    <div id="contributions" style={props.style} className="container">
       <Typography variant="h2">Contributions</Typography>
       <br />
       <Masonry columns={2} spacing={2}>

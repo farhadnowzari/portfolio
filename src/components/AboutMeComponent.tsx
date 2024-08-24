@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 
 const AboutMeComponent = (props: PropsBase) => {
     return (
-        <div style={props.style} className="container">
+        <div id="about-me" style={props.style} className="container">
             <Typography variant='h2'>About Me</Typography>
             <br />
             <Typography fontSize={20} paragraph>

@@ -96,7 +96,7 @@ const skills = [
 
 const SkillsComponent = (props: PropsBase) => {
   return (
-    <div style={props.style} className="container">
+    <div id="skills" style={props.style} className="container">
       <Typography variant="h2">Skills</Typography>
       <br />
       <Masonry columns={2} spacing={2}>

@@ -18,7 +18,8 @@ interface Experience {
 
 const experiences: Experience[] = [
   {
-    title: "Senior Software Architect - gis-consulting GmbH, Stuttgart, Germany",
+    title:
+      "Senior Software Architect - gis-consulting GmbH, Stuttgart, Germany",
     dateFrom: "June 2020",
     skills: [
       {
@@ -118,7 +119,7 @@ const experiences: Experience[] = [
 
 const ExperiencesComponent = (props: PropsBase) => {
   return (
-    <div style={props.style} className="container">
+    <div id="experiences" style={props.style} className="container">
       <Typography variant="h2">Experiences</Typography>
       <br />
       <Grid container spacing={2}>
@@ -133,30 +134,28 @@ const ExperiencesComponent = (props: PropsBase) => {
               ></CardHeader>
               <CardContent>
                 {experience.skills.map((skillSet, index) => (
-                  <Typography key={index}>
+                  <div key={index}>
                     {Object.keys(skillSet).map((key, index) => (
                       <div key={index} style={{ margin: "5px 0px" }}>
-                        <Typography variant="h5">
-                          <Box
-                            display="flex"
-                            flexWrap="wrap"
-                            alignItems="center"
-                            gap="5px"
-                          >
-                            {key}:
-                            {skillSet[key].map((skill, index) => (
-                              <Chip
-                                label={skill}
-                                key={index}
-                                size="small"
-                                sx={{ fontSize: "15px" }}
-                              ></Chip>
-                            ))}
-                          </Box>
-                        </Typography>
+                        <Box
+                          display="flex"
+                          flexWrap="wrap"
+                          alignItems="center"
+                          gap="5px"
+                        >
+                          {key}:
+                          {skillSet[key].map((skill, index) => (
+                            <Chip
+                              label={skill}
+                              key={index}
+                              size="small"
+                              sx={{ fontSize: "15px" }}
+                            ></Chip>
+                          ))}
+                        </Box>
                       </div>
                     ))}
-                  </Typography>
+                  </div>
                 ))}
               </CardContent>
             </Card>
