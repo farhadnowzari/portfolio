@@ -4,20 +4,15 @@ import {
   BottomNavigationAction,
   Box,
   createTheme,
-  Fab,
-  Grow,
-  Menu,
-  MenuItem,
   useMediaQuery,
 } from "@mui/material";
-import { navyBlue, themeBase } from "./components/themes";
+import { themeBase } from "./components/themes";
 import StickyInformation from "./components/StickyInformation";
 import FarhadComponent from "./components/FarhadComponent";
 import AboutMeComponent from "./components/AboutMeComponent";
 import SkillsComponent from "./components/SkillsComponent";
 import ContributionsComponent from "./components/ContributionsComponent";
 import ExperiencesComponent from "./components/ExperiencesComponent";
-import BurgerIcon from "./assets/burger.svg";
 import {
   ConstructionOutlined,
   HomeOutlined,
@@ -63,7 +58,7 @@ function App() {
       {isSmallScreen && (
         <BottomNavigation
           value={value}
-          onChange={(event, newValue) => {
+          onChange={(_, newValue) => {
             setValue(newValue);
           }}
           sx={{

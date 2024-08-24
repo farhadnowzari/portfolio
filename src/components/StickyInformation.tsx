@@ -43,7 +43,7 @@ const StickyInformation = () => {
         <span style={{ marginTop: "20px" }}>
           <Button
             variant="outlined"
-            href="assets/Farhad Nowzari CV.pdf"
+            href="/assets/Farhad Nowzari CV.pdf"
             target="_blank"
             download="Farhad Nowzari CV.pdf"
           >
