@@ -143,7 +143,7 @@ const ExperiencesComponent = (props: PropsBase) => {
                           alignItems="center"
                           gap="5px"
                         >
-                          {key}:
+                          <Typography>{key}:</Typography>
                           {skillSet[key].map((skill, index) => (
                             <Chip
                               label={skill}

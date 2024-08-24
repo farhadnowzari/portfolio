@@ -2,14 +2,16 @@ import ContributionCardComponent from "./ContributionCardComponent";
 import GitlabOnKubernetesThumbnail from '../assets/gitlab_on_kubernetes.png';
 
 import PropsBase from "./PropsBase";
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Masonry } from "@mui/lab";
 const ContributionsComponent = (props: PropsBase) => {
+  const theme = useTheme();
+  const isSmallerScreen = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <div id="contributions" style={props.style} className="container">
       <Typography variant="h2">Contributions</Typography>
       <br />
-      <Masonry columns={2} spacing={2}>
+      <Masonry columns={isSmallerScreen ? 1 : 2} spacing={2}>
         <ContributionCardComponent
           link="https://github.com/berrybeat/Neo4j.Berries.OGM"
           type="github"

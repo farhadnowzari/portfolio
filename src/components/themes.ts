@@ -59,4 +59,4 @@ const stickyInformationTheme: ThemeOptions = {
   },
 };
 
-export { themeBase, stickyInformationTheme };
+export { themeBase, stickyInformationTheme, navyBlue };

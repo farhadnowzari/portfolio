@@ -1,4 +1,4 @@
-import { Typography, Card, Grid, Rating, CardHeader, CardContent } from "@mui/material";
+import { Typography, Card, Grid, Rating, CardHeader, CardContent, useTheme, useMediaQuery } from "@mui/material";
 import { Masonry } from "@mui/lab";
 import PropsBase from "./PropsBase";
 
@@ -95,11 +95,13 @@ const skills = [
 ];
 
 const SkillsComponent = (props: PropsBase) => {
+  const theme = useTheme();
+  const isSmallerScreen = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <div id="skills" style={props.style} className="container">
       <Typography variant="h2">Skills</Typography>
       <br />
-      <Masonry columns={2} spacing={2}>
+      <Masonry columns={ isSmallerScreen ? 1 : 2 } spacing={2}>
         {skills.map((skillGroup, index) => {
           return (
             <Card key={index}>

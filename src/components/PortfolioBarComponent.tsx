@@ -8,7 +8,6 @@ import {
   Menu,
   MenuItem,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import { HomeOutlined, ConstructionOutlined, VolunteerActivismOutlined, WorkHistoryOutlined, InfoOutlined  } from "@mui/icons-material";
 
