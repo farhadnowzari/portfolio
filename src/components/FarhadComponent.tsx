@@ -11,8 +11,14 @@ import {
   Typography,
   Link,
   Tooltip,
+  Button,
 } from "@mui/material";
-import { GitHub, LinkedIn, YouTube } from "@mui/icons-material";
+import {
+  DownloadOutlined,
+  GitHub,
+  LinkedIn,
+  YouTube,
+} from "@mui/icons-material";
 
 const introTheme = createTheme(deepmerge(themeBase, stickyInformationTheme));
 
@@ -60,18 +66,24 @@ const FarhadComponent = () => {
                   alt={imageAlt}
                   src={farhadImage}
                 ></Avatar>
-                <Box display="flex" justifyContent="center" alignItems="center" gap="15px" marginTop="10px">
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  gap="15px"
+                  marginTop="10px"
+                >
                   <Link
                     href="https://www.linkedin.com/in/farhad-nowzari-94060699/"
                     target="_blank"
                   >
                     <Tooltip title="LinkedIn">
-                      <LinkedIn sx={{fontSize: "25px"}} />
+                      <LinkedIn sx={{ fontSize: "25px" }} />
                     </Tooltip>
                   </Link>
                   <Link href="https://github.com/farhadnowzari" target="_blank">
                     <Tooltip title="Github">
-                      <GitHub sx={{fontSize: "25px"}} />
+                      <GitHub sx={{ fontSize: "25px" }} />
                     </Tooltip>
                   </Link>
                   <Link
@@ -79,7 +91,7 @@ const FarhadComponent = () => {
                     target="_blank"
                   >
                     <Tooltip title="Youtube">
-                      <YouTube sx={{fontSize: "25px"}} />
+                      <YouTube sx={{ fontSize: "25px" }} />
                     </Tooltip>
                   </Link>
                 </Box>
@@ -108,6 +120,14 @@ const FarhadComponent = () => {
                   energy when added to any teams!
                 </Typography>
               </Box>
+              <Button
+                href="/assets/Farhad Nowzari CV.pdf"
+                target="_blank"
+                download="Farhad Nowzari CV.pdf"
+                variant="outlined"
+              >
+                <DownloadOutlined /> Download My CV
+              </Button>
             </Box>
           </Box>
         </ThemeProvider>
