@@ -32,7 +32,7 @@ const AboutMeComponent = (props: PropsBase) => {
                 together!
             </Typography>
             <Typography fontSize={20}>
-                Cheers,<br />
+                Sincerely,<br />
                 Farhad ❤️
             </Typography>
         </div>

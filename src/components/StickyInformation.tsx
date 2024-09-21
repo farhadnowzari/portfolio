@@ -5,7 +5,7 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
-  Link
+  Link,
 } from "@mui/material";
 import {
   YouTube,
@@ -36,16 +36,16 @@ const StickyInformation = () => {
           Farhad Nowzari
         </Typography>
         <Typography marginTop="30px">
-          I am an enthusiastic full stack developer with some software
-          architecture background. I am a team player and a boost of energy when
-          added to any teams!
+          I’m an enthusiastic full-stack developer with a strong foundation in
+          software architecture. I thrive in team environments and bring a
+          positive, energetic boost to any group I’m a part of!
         </Typography>
         <span style={{ marginTop: "20px" }}>
           <Button
             variant="outlined"
-            href="/assets/Farhad Nowzari CV.pdf"
+            href="/assets/CV - Farhad Nowzari.pdf"
             target="_blank"
-            download="Farhad Nowzari CV.pdf"
+            download="CV - Farhad Nowzari.pdf"
           >
             <DownloadOutlined /> Download my CV
           </Button>
