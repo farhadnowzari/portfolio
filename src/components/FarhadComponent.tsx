@@ -120,9 +120,9 @@ const FarhadComponent = () => {
                   energy when added to any teams!
                 </Typography>
                 <Button
-                  href="/assets/Farhad Nowzari CV.pdf"
+                  href="/assets/CV - Farhad Nowzari.pdf"
                   target="_blank"
-                  download="Farhad Nowzari CV.pdf"
+                  download="CV - Farhad Nowzari.pdf"
                   variant="outlined"
                   sx={{ marginTop: "20px" }}
                 >
