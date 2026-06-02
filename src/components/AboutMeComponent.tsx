@@ -16,7 +16,7 @@ const AboutMeComponent = (props: PropsBase) => {
             <Typography fontSize={20} paragraph>
                 In any company or projects I have participated in, I have always tried to leave a
                 footprint and make sure all my colleagues even without me can still continue and be
-                successful. In the past five years, I have been focusing on developing enterprise level
+                successful. In the past seven years, I have been focusing on developing enterprise level
                 products. This has made me more patient and careful while I still am courageous
                 enough to try something new and make sure the code base or product will not suffer
                 deprecation in the short term. In short, I still can have a lot of fun while maintaining or
@@ -33,7 +33,7 @@ const AboutMeComponent = (props: PropsBase) => {
             </Typography>
             <Typography fontSize={20}>
                 Sincerely,<br />
-                Farhad ❤️
+                Farhad 💙
             </Typography>
         </div>
     )
