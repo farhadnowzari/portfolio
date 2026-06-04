@@ -12,59 +12,58 @@ class Skill {
 }
 
 const backendTechnologies = [
-  new Skill("C# (dotnet)", 5),
+  new Skill("C#", 4),
+  new Skill("Go", 3),
   new Skill("nodejs (ts/js)", 3),
   new Skill("Node-RED", 3),
-  new Skill("Camunda (BPMN engine)", 3),
-  new Skill("PHP (Laravel)", 3),
+  new Skill("n8n", 3),
+  new Skill("PHP", 2),
 ];
 
 const frontendTechnologies = [
   new Skill("vuejs (ts/js)", 5),
-  new Skill("vuetify (ts/js)", 5),
-  new Skill("Quasar (ts/js)", 4),
   new Skill("react (ts/js)", 3),
-  new Skill("SCSS (ts/js)", 3),
+  new Skill("single-spa", 3),
+  new Skill("scss", 3),
 ];
 
 const patternsAndPractices = [
   new Skill("Microservices", 5),
   new Skill("Microfrontends", 4),
-  new Skill("CQRS", 5),
-  new Skill("DDD", 5),
-  new Skill("TDD", 5),
-  new Skill("Clean code", 4),
-  new Skill("Infrastructure as code", 4),
-  new Skill("Low-Code Principles", 5),
-  new Skill("GraphQL", 4),
-  new Skill("REST API", 5),
+  new Skill("CQRS", 4),
+  new Skill("DDD", 4),
 ];
 
 const databasesAndStreamingPlatforms = [
   new Skill("Neo4j", 4),
-  new Skill("ElasticSearch (7.x)", 4),
-  new Skill("PostgreSQL", 4),
-  new Skill("SQL Server", 3),
+  new Skill("Elasticsearch", 3),
+  new Skill("PostgreSQL", 3),
+  new Skill("MySQL", 3),
   new Skill("Redis", 3),
-  new Skill("Kafka", 3),
-  new Skill("Mosquitto (MQTT)", 3),
 ];
 
 const devOpsAndServerTechnologies = [
   new Skill("Kubernetes", 4),
-  new Skill("Containerization (docker)", 5),
-  new Skill("Helm charts", 5),
-  new Skill("Azure", 3),
-  new Skill("Open-Telekom-Cloud (OTC)", 3),
-  new Skill("Flux", 3),
-  new Skill("Gitlab CI/CD", 4),
-  new Skill("Github Actions", 3),
+  new Skill("Helm charts", 3),
+  new Skill("Gitlab CI/CD", 3),
+  new Skill("Github Actions", 2),
+  new Skill("Flux", 4),
+  new Skill("Datadog", 3),
+];
+
+const eventsAndStreams = [
+  new Skill("Kafka", 3),
+  new Skill("Mosquitto (mqtt)", 4),
+];
+
+const testing = [
+  new Skill("TDD", 5),
 ];
 
 const languages = [
   new Skill("Persian (Native)", 5),
   new Skill("English", 4),
-  new Skill("German (B1, Working on it)", 2),
+  new Skill("German (Intermediate - B1)", 3),
 ];
 
 const skills = [
@@ -77,16 +76,24 @@ const skills = [
     skills: frontendTechnologies,
   },
   {
-    title: "Patterns and Practices",
+    title: "Architecture",
     skills: patternsAndPractices,
   },
   {
-    title: "Databases and Streaming Platforms",
+    title: "SRE",
+    skills: devOpsAndServerTechnologies,
+  },
+  {
+    title: "Databases",
     skills: databasesAndStreamingPlatforms,
   },
   {
-    title: "DevOps and Server Technologies",
-    skills: devOpsAndServerTechnologies,
+    title: "Events and Streams",
+    skills: eventsAndStreams,
+  },
+  {
+    title: "Test",
+    skills: testing,
   },
   {
     title: "Languages",

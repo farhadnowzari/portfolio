@@ -32,8 +32,7 @@ const FarhadComponent = () => {
       {!isSmallScreen && (
         <div
           id="home"
-          className="h-100"
-          style={{ maxHeight: "100vh", overflow: "hidden" }}
+          style={{ height: "100vh", overflow: "hidden" }}
         >
           <img
             alt={imageAlt}

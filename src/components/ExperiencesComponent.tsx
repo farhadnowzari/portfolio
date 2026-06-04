@@ -19,48 +19,33 @@ interface Experience {
 
 const experiences: Experience[] = [
   {
-    title:
-      "Senior FullStack Engineer - Kaufland e-commerce GmbH, Remote, Germany",
-    dateFrom: "March 2026",
+    title: "Senior FullStack Engineer - Kaufland e-commerce, Remote, Germany",
+    dateFrom: "March 2025",
     description:
       "I lead complex initiatives that require strong technical judgment and cross-team communication skills. I support my team across both frontend and backend development tasks, and I am responsible for driving design and architectural decisions within our team.",
     skills: [
       {
-        Backend: [
-          "Go",
-          "nodejs",
-          "php",
-          "MySQL",
-          "redis",
-          "Kafka",
-        ],
+        Backend: ["Go", "nodejs", "PHP", "MySQL", "Redis", "Kafka"],
       },
       {
-        Frontend: [
-          "vue2",
-          "vue3",
-          "single-spa",
-          "typescript",
-          "SCSS",
-        ],
+        Frontend: ["vue@2", "vue@3", "single-spa", "typescript", "scss"],
       },
       {
         Others: [
           "Kubernetes",
-          "Docker",
           "Helm",
           "GitLab CI/CD",
           "Google Cloud",
-          "BigQuery",
+          "Claude Code",
         ],
       },
     ],
   },
   {
     title:
-      "Senior FullStack Engineer - gis-consulting GmbH, Stuttgart, Germany",
+      "Senior FullStack Engineer - gis-consulting GmbH, Hybrid, Trossingen, Germany",
     dateFrom: "June 2020",
-    dateUntil: "February 2026",
+    dateUntil: "February 2025",
     description:
       "This is where I grew the most as a developer and team lead. I led the migration of a monolithic application to microservices, overseeing the architecture, development, and deployment of the new services, as well as managing the CI/CD pipeline and Kubernetes deployment. I was also responsible for the development of the new frontend and mentored my teammates throughout the process.",
     skills: [
@@ -71,77 +56,47 @@ const experiences: Experience[] = [
           "GraphQL",
           "neo4j",
           "PostgreSQL",
+          "SQL Server",
           "Elasticsearch",
-          "redis",
+          "Redis",
           "xUnit Tests",
-          "Camunda",
           "Kafka",
-          "Keycloak",
         ],
       },
       {
-        Frontend: [
-          "vue2",
-          "vue3",
-          "Vuetify",
-          "Quasar",
-          "single-spa",
-          "typescript",
-          "SCSS",
-        ],
+        Frontend: ["vue@2", "vue@3", "single-spa", "typescript", "scss"],
       },
       {
         Others: [
           "Kubernetes",
-          "Docker",
           "Helm",
           "GitLab CI/CD",
           "Azure",
-          "OTC",
+          "Open-Telekom-Cloud",
           "On-Premise Kubernetes instances",
         ],
       },
     ],
   },
   {
-    title: "Web Developer - NavaTec GmbH, Heilbronn, Germany",
-    dateFrom: "March 2019",
-    dateUntil: "May 2020",
-    description:
-      "Here I continued my Germany to work with an international team in Germany. I was responsible for the development of a new SaaS, from the backend to the frontend, and the deployment of the application to the cloud.",
-    skills: [
-      {
-        Backend: [
-          "PHP (Laravel)",
-          "REST APIs",
-          "PostgreSQL",
-          "Elasticsearch",
-          "redis",
-        ],
-      },
-      {
-        Frontend: ["vue2", "JQuery", "ElementUI", "Javascript", "SCSS"],
-      },
-      {
-        Others: ["Docker"],
-      },
-    ],
-  },
-  {
-    title: "Web Developer - NavaTec GmbH, HomeOffice, Iran",
+    title:
+      "Web Developer - NavaTec GmbH, Remote Iran / On-Site Heilbronn, Germany",
     dateFrom: "August 2016",
-    dateUntil: "March 2019",
+    dateUntil: "May 2020",
     description:
       "Here is where I started the journey of working with an international team. I was responsible for the development of a new SaaS, from the backend to the frontend, and the deployment of the application to the cloud.",
     skills: [
       {
-        Backend: ["C# (ASP.NET MVC)", "PHP (Laravel)", "REST APIs", "MariaDB"],
+        Backend: [
+          "C# (ASP.NET MVC)",
+          "PHP (Laravel)",
+          "MySQL",
+          "PostgreSQL",
+          "Elasticsearch",
+        ],
       },
       {
-        Frontend: ["JQuery", "Bootstrap", "Javascript"],
-      },
-      {
-        Others: ["IIS"],
+        Frontend: ["jQuery", "bootstrap", "vue@2"],
       },
     ],
   },
@@ -149,15 +104,15 @@ const experiences: Experience[] = [
     title: "FullStack Developer - Freelancer, Iran",
     dateFrom: "August 2012",
     dateUntil: "September 2016",
+    description:
+      "During university, I started taking projects as a freelancer to learn by doing. I worked across a wide range of technologies and eventually found my path in web development.",
     skills: [
       {
-        Backend: ["C#", "VB.Net", "REST APIs", "SQL Server", "SQLite", "MySQL"],
-      },
-      {
-        Frontend: ["JQuery", "Bootstrap", "Javascript", "WPF (XAML)"],
-      },
-      {
-        Others: ["IIS"],
+        Focus: [
+          "Freelance client projects",
+          "Full-stack delivery",
+          "Web development",
+        ],
       },
     ],
   },
