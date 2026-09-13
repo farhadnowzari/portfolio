@@ -1,0 +1,16 @@
+// Vuetify SASS variable overrides (loaded by vite-plugin-vuetify `styles.configFile`).
+// Port of MUI `themeBase.typography` (components/themes.ts):
+//   fontSize 20 (base) → every non-overridden MUI variant scaled by 20/14,
+//   h1 60px, h2 40px, h5 20px, body1 15px, body2 → 14px × 20/14 = 20px (as-is).
+// Line-heights are MUI's unitless defaults so the px sizes render at the same height.
+@use 'vuetify/settings' with (
+  $body-font-family: ('Roboto', 'Helvetica', 'Arial', sans-serif),
+  $typography: (
+    'h1': ('size': 60px, 'line-height': 1.167),
+    'h2': ('size': 40px, 'line-height': 1.2),
+    'h5': ('size': 20px, 'line-height': 1.334),
+    'body-1': ('size': 15px, 'line-height': 1.5),
+    'body-2': ('size': 20px, 'line-height': 1.43),
+    'button': ('size': 20px, 'line-height': 1.75),
+  ),
+);

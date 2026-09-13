@@ -1,23 +1,21 @@
-import {
-  Typography,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  Grid,
-} from "@mui/material";
-import PropsBase from "./PropsBase";
-import { Box } from "@mui/system";
+// Ported 1:1 from react/src/components/ExperiencesComponent.tsx (lines 12-119).
+// Ruling 9: content is as-is. No framework imports.
+//
+// Shape note: `skills` is an ARRAY of single-key records, e.g. [{ Backend: [...] }, { Frontend: [...] }].
+// React iterates skills[] then Object.keys(record) for each. Preserve this shape and order.
 
-interface Experience {
+export interface Experience {
   title: string;
   dateFrom: string;
+  /** When undefined, UI renders "Present". */
   dateUntil?: string;
+  /** When undefined, the "What I did?" CardContent block is omitted. */
   description?: string;
   skills: Record<string, string[]>[];
 }
 
-const experiences: Experience[] = [
+/** Render order is significant (newest first). */
+export const experiences: Experience[] = [
   {
     title: "Senior FullStack Engineer - Kaufland e-commerce, Remote, Germany",
     dateFrom: "March 2025",
@@ -117,62 +115,3 @@ const experiences: Experience[] = [
     ],
   },
 ];
-
-const ExperiencesComponent = (props: PropsBase) => {
-  return (
-    <div id="experiences" style={props.style} className="container">
-      <Typography variant="h2">Experiences</Typography>
-      <br />
-      <Grid container spacing={2}>
-        {experiences.map((experience, index) => (
-          <Grid item xs={12} key={index}>
-            <Card>
-              <CardHeader
-                title={experience.title}
-                subheader={`${experience.dateFrom} - ${
-                  experience.dateUntil || "Present"
-                }`}
-              ></CardHeader>
-              <CardContent>
-                {experience.skills.map((skillSet, index) => (
-                  <div key={index}>
-                    {Object.keys(skillSet).map((key, index) => (
-                      <div key={index} style={{ margin: "5px 0px" }}>
-                        <Box
-                          display="flex"
-                          flexWrap="wrap"
-                          alignItems="center"
-                          gap="5px"
-                        >
-                          <Typography>{key}:</Typography>
-                          {skillSet[key].map((skill, index) => (
-                            <Chip
-                              label={skill}
-                              key={index}
-                              size="small"
-                              sx={{ fontSize: "15px" }}
-                            ></Chip>
-                          ))}
-                        </Box>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </CardContent>
-              {experience.description && (
-                <CardContent>
-                  <Typography variant="body2">What I did?</Typography>
-                  <Typography paragraph variant="body1">
-                    {experience.description}
-                  </Typography>
-                </CardContent>
-              )}
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </div>
-  );
-};
-
-export default ExperiencesComponent;
