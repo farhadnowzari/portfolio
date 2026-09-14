@@ -59,11 +59,21 @@
 }
 
 .topbar__actions .btn {
-  // Ruling 59: design-v4 §4.0 — "Both buttons 44px tall; [CV] 66px filled, [Say hi] 78px outline"
-  // — inherit .btn's 44px min-height, tune padding to land on the two widths the spec actually
-  // gives (host feedback, round 9: the narrower ad-hoc padding read as too boxy/tall for its width).
-  padding: 0 14px;
+  // R131 (supersedes R59's 44px): 36px visual in the 48px mobile bar, 6px clearance each side —
+  // 44px buttons left 2px and read as "stretched way too much vertically". The 44px touch target
+  // (WCAG 2.5.8 / iOS HIG) stays: the `::before` hit layer grows the CLICKABLE box 4px up and down
+  // without growing the visible one (same trick as `.card__contact a::after`). Vertical only —
+  // `inset: -4px 0` keeps the layers from overlapping the neighbour across the 8px gap.
+  position: relative;
+  min-height: 36px;
+  padding: 0 12px;
   font-size: 13px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px 0;
+  }
 }
 
 @media (min-width: 769px) {

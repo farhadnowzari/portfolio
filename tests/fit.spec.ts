@@ -13,6 +13,8 @@
 //     third floating block, the inline hook number (R62) is present
 //   + §5: the copper axis line is flush with the bottom bar at 375×550, zero gap, every height
 //   + §4: desktop top bar is 56px / buttons 40px, not stretched to a shared 44px
+//   + R131 (@mobile, phone matrix): 48px bar / 36px buttons with a 44px `::before` hit layer; the
+//     static index.html bar (no JS) gets the same rule from the inlined critical CSS
 //   + design v7 §1/§2 (R66/R68): /skills is its own route, 4 nav items, chips by CV group, no bars
 //   + design v7 §3 (R69): /work rail — desktop present, mobile absent; v8 §1e: active = the route
 //   + design v7 §4/§5b, R74/R75: captions in the diagram, the peek rows, the /story numeral, the rail
@@ -155,6 +157,86 @@ test.describe('/ desktop', () => {
     const cv = page.locator('.topbar__actions .btn').first()
     const box = await cv.boundingBox()
     expect(box!.height).toBeCloseTo(40, 0)
+  })
+})
+
+// R131: on the phone matrix the 48px bar keeps 36px-tall CV / Say hi (host: 44px "stretched way too
+// much vertically"), with a `::before` hit layer that makes the CLICKABLE box 44px without growing
+// the visual. `@mobile` puts this on playwright.config.ts's phone projects; the two landscape phones
+// are ≥769 wide and land on the desktop breakpoint, so they assert the untouched 56/40 there instead.
+test.describe('top bar buttons @mobile (R131)', () => {
+  type Probe = { hitTop: boolean; hitBottom: boolean; gapIsFree: boolean; farAboveIsNotBtn: boolean }
+
+  /** elementFromPoint around each button: 2px past the visual top/bottom must still be the button
+   *  (≥44px effective), 4px into the 8px gap must be neither button (hit layers do not overlap
+   *  horizontally), and 2px past the 44px hit box must not be the button (the layer is 4px, not more). */
+  async function probe(page: Page): Promise<Probe[]> {
+    return page.evaluate(() => {
+      const btns = [...document.querySelectorAll<HTMLElement>('.topbar__actions .btn')]
+      const isBtn = (x: number, y: number, b: HTMLElement) => document.elementFromPoint(x, y)?.closest('.topbar__actions .btn') === b
+      const anyBtn = (x: number, y: number) => !!document.elementFromPoint(x, y)?.closest('.topbar__actions .btn')
+      return btns.map((b, i) => {
+        const r = b.getBoundingClientRect()
+        const cx = r.left + r.width / 2
+        const next = btns[i + 1]?.getBoundingClientRect()
+        return {
+          hitTop: isBtn(cx, r.top - 2, b),
+          hitBottom: isBtn(cx, r.bottom + 2, b),
+          gapIsFree: next ? !anyBtn((r.right + next.left) / 2, r.top + r.height / 2) : true,
+          farAboveIsNotBtn: !isBtn(cx, r.top - 6, b),
+        }
+      })
+    })
+  }
+
+  async function assertBar(page: Page) {
+    const width = page.viewportSize()!.width
+    const bar = await rectOf(page, '.topbar')
+    const btns = page.locator('.topbar__actions .btn')
+    await expect(btns).toHaveCount(2)
+    if (width >= 769) {
+      // §4 desktop block: untouched by R131.
+      expect(bar!.height).toBeCloseTo(56, 0)
+      for (const box of await btns.evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height))) expect(box).toBeCloseTo(40, 0)
+      return
+    }
+    expect(bar!.height).toBeCloseTo(48, 0)
+    const boxes = await btns.evaluateAll((els) => els.map((e) => {
+      const r = e.getBoundingClientRect()
+      const cs = getComputedStyle(e)
+      return { height: r.height, top: r.top, fontSize: cs.fontSize, radius: cs.borderRadius, gap: getComputedStyle(e.parentElement!).gap }
+    }))
+    for (const b of boxes) {
+      expect(b.height).toBeCloseTo(36, 0)
+      expect(Math.abs(b.top - (bar!.height - b.height) / 2)).toBeLessThanOrEqual(1) // centred in the bar (~6px above and below)
+      expect(b.fontSize).toBe('13px')
+      expect(b.radius).toBe('4px')
+      expect(b.gap).toBe('8px')
+    }
+    // the CV icon is 1em of a 13px label — it must not be what sets the button's height
+    const icon = await page.locator('.topbar__actions .btn .icon').first().boundingBox()
+    expect(icon!.height).toBeLessThanOrEqual(14)
+    expect(await page.locator('.topbar__name').evaluate((e) => getComputedStyle(e).fontSize)).toBe('14px')
+    for (const p of await probe(page)) {
+      expect(p.hitTop).toBe(true)
+      expect(p.hitBottom).toBe(true)
+      expect(p.gapIsFree).toBe(true)
+      expect(p.farAboveIsNotBtn).toBe(true)
+    }
+  }
+
+  test('36px visual, 44px clickable, neighbours do not overlap', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.locator('.home .t-name')).toBeVisible()
+    await assertBar(page)
+  })
+
+  test('the static (pre-hydration) bar in index.html gets the same rule', async ({ page }) => {
+    // no JS: what a cold load paints before the Vue bundle arrives, from the inlined critical CSS.
+    await page.route('**/*.js', (route) => route.abort())
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    await expect(page.locator('.static-card')).toBeVisible()
+    await assertBar(page)
   })
 })
 

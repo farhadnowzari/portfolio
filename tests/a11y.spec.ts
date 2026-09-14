@@ -70,11 +70,19 @@ test('touch targets: ledger rows, contact links, top bar >= 44px', async ({ page
   await page.setViewportSize({ width: 390, height: 844 })
 
   await page.goto('/')
+  // R131: the mobile top bar buttons are 36px VISUALLY (44px in a 48px bar read as stretched) and
+  // reach 44px through a `::before` hit layer (`position: absolute; inset: -4px 0`) — same pattern
+  // as the contact links below. Measure the tap area, not the painted box. (tests/fit.spec.ts's
+  // R131 block proves with elementFromPoint that the layer actually receives the tap.)
   const topBarBtns = page.locator('.topbar__actions .btn')
   for (let i = 0; i < (await topBarBtns.count()); i++) {
-    const box = await topBarBtns.nth(i).boundingBox()
-    expect(box, `topbar btn #${i}`).not.toBeNull()
-    expect(box!.height, `topbar btn #${i} height`).toBeGreaterThanOrEqual(44)
+    const tapHeight = await topBarBtns.nth(i).evaluate((el) => {
+      const rect = el.getBoundingClientRect()
+      const before = getComputedStyle(el, '::before')
+      const insetTop = before.content === 'none' ? 0 : parseFloat(before.top) || 0
+      return rect.height + Math.abs(insetTop) * 2
+    })
+    expect(tapHeight, `topbar btn #${i} tap area`).toBeGreaterThanOrEqual(44)
   }
   // card__contact links use an expanded invisible hit-area (::after, position: absolute), not a
   // literal 44px-tall element — a real 44px box per link would blow the mobile card's pixel budget
