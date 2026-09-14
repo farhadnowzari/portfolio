@@ -1,0 +1,47 @@
+name: Deploy to farhadnowzari.github.io
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: volta-cli/action@v4
+
+      - name: Install
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Unit tests
+        run: yarn test
+
+      - name: Build
+        run: yarn build
+
+      - name: Guard the Google site-verification file
+        run: |
+          test -f dist/google3377503419341e15.html
+          grep -qx 'google-site-verification: google3377503419341e15.html' dist/google3377503419341e15.html
+
+      - name: Publish dist to the pages repo
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.PAGES_DEPLOY_KEY }}
+          external_repository: farhadnowzari/farhadnowzari.github.io
+          publish_branch: master
+          publish_dir: ./dist
+          cname: false
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_message: 'deploy: ${{ github.sha }}'
