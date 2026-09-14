@@ -1,7 +1,7 @@
 // deck.spec.ts — the one-panel-at-a-time deck (design v8 §1, R76/R80). Runs against `yarn preview`
 // (playwright.config.ts). Desktop: wheel / keys / rail / Next / back-forward, the 560ms lock, deep
 // links without animation, reduced motion = instant swap, the ending as `/story/ending`, the rail's
-// spine fill. Mobile: native scroll-snap lands on panel boundaries.
+// spine fill. Mobile (R123): a plain document scroll, every block readable, the hash tracking the 40% band.
 import { test, expect, type Page } from '@playwright/test'
 import { readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -352,52 +352,248 @@ test.describe('desktop deck: /work', () => {
   })
 })
 
-test.describe('mobile: native scroll-snap', () => {
-  test.use({ viewport: { width: 400, height: 667 }, hasTouch: true })
+// ── R123/R124/R125: mobile is a plain document scroll ──
+// Runs on the phone matrix in playwright.config.ts (`@mobile`), never on Desktop Chrome. The two
+// landscape projects are ≥769 wide, i.e. the desktop deck on a phone: the mobile assertions are
+// skipped there and `landscape` covers what that breakpoint must still do.
+test.describe('mobile @mobile: plain document scroll (R123)', () => {
+  const MOBILE_ROUTES = [
+    { view: 'story', ids: [...parts.map((p) => p.id), 'ending'] },
+    { view: 'work', ids: roles.map((r) => r.id) },
+  ] as const
+  const WHEEL_STEP = 100
 
-  test('/story: every panel is a snap area; a fling lands on a panel boundary; header stays', async ({ page }) => {
-    await page.goto('/#/story')
-    await expect(page).toHaveURL(/#\/story\/radio$/)
-    const snap = await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)
-    expect(snap).toMatch(/y mandatory/)
-    await expect(page.locator('.panel')).toHaveCount(parts.length + 1)
-    // deep-linkable ids on every panel
-    for (const p of parts) await expect(page.locator(`#${p.id}`)).toHaveCount(1)
-    await expect(page.locator('#ending')).toHaveCount(1)
-    await page.mouse.move(200, 400)
-    await page.mouse.wheel(0, 300)
-    await page.waitForTimeout(800)
-    const { y, tops } = await page.evaluate(() => ({
-      y: window.scrollY,
-      tops: [...document.querySelectorAll('.panel')].map((el) => (el as HTMLElement).getBoundingClientRect().top + window.scrollY - 88),
-    }))
-    expect(y).toBeGreaterThan(0)
-    expect(tops.some((t) => Math.abs(t - y) <= 1)).toBe(true)
-    await expect(page.locator('.story__header')).toBeInViewport()
-    await expect(page.locator('.topbar')).toBeInViewport()
+  /** The reading window: below the sticky chrome (topbar + the PART header on /story), above the bottom bar. */
+  async function readingWindow(page: Page) {
+    return page.evaluate(() => {
+      const top = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      const head = document.querySelector('.story__header')?.getBoundingClientRect().bottom ?? 0
+      const bottom = document.querySelector('.bottombar')!.getBoundingClientRect().top
+      return { top: Math.max(top, head), bottom }
+    })
+  }
+
+  /** Wait until scrollY has not moved across ~150ms of frames. */
+  async function settled(page: Page) {
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          let last = scrollY
+          let still = 0
+          const tick = () => {
+            if (scrollY === last) still++
+            else {
+              still = 0
+              last = scrollY
+            }
+            if (still >= 9) resolve()
+            else requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+        }),
+    )
+  }
+
+  /**
+   * Ids of the panels crossing the 40% band (R124's rootMargin: 40% … 40.1% of the viewport, ±1px:
+   * the engine snaps the IO root rect to whole pixels). Usually one; two for the moment a panel
+   * boundary sits inside the band; none in the /work head.
+   */
+  async function panelsAtBand(page: Page) {
+    return page.evaluate(() => {
+      const top = innerHeight * 0.4 - 1
+      const bottom = innerHeight * 0.401 + 1
+      return [...document.querySelectorAll<HTMLElement>('.panel')]
+        .filter((el) => {
+          const r = el.getBoundingClientRect()
+          return r.bottom > top && r.top < bottom
+        })
+        .map((el) => el.id)
+    })
+  }
+
+  function mobileOnly(width: number) {
+    test.skip(width >= 769, '≥769 wide is the desktop deck (see `landscape`)')
+  }
+
+  test('(1) no scroll-snap anywhere below 769; panels keep natural heights', async ({ page, viewport }) => {
+    mobileOnly(viewport!.width)
+    for (const { view, ids } of MOBILE_ROUTES) {
+      await page.goto(`/#/${view}`)
+      await expect(page).toHaveURL(new RegExp(`#/${view}/${ids[0]}$`))
+      await expect(page.locator('.panel')).toHaveCount(ids.length)
+      const css = await page.evaluate(() => {
+        const html = getComputedStyle(document.documentElement)
+        const body = getComputedStyle(document.body)
+        const panels = [...document.querySelectorAll<HTMLElement>('.panel')].map((el) => {
+          const cs = getComputedStyle(el)
+          return { id: el.id, align: cs.scrollSnapAlign, stop: cs.scrollSnapStop, minHeight: cs.minHeight, marginTop: cs.scrollMarginTop, padding: cs.padding }
+        })
+        return { htmlSnap: html.scrollSnapType, bodySnap: body.scrollSnapType, padTop: html.scrollPaddingTop, padBottom: html.scrollPaddingBottom, panels }
+      })
+      expect(css.htmlSnap).toBe('none')
+      expect(css.bodySnap).toBe('none')
+      expect(css.padTop).toBe('auto')
+      expect(css.padBottom).toBe('auto')
+      for (const p of css.panels) {
+        expect(p.align, `${view}/${p.id} scroll-snap-align`).toBe('none')
+        expect(p.stop, `${view}/${p.id} scroll-snap-stop`).toBe('normal')
+        expect(p.padding, `${view}/${p.id} padding`).toBe('32px 16px 40px')
+        // R123: the ending (and the last role, for the same reason) keep a floor; nothing else does
+        if (p.id !== 'ending' && p.id !== roles[roles.length - 1]!.id) expect(['0px', 'auto'], `${view}/${p.id} min-height ${p.minHeight}`).toContain(p.minHeight)
+        expect(p.marginTop, `${view}/${p.id} scroll-margin-top`).toBe(view === 'story' ? '88px' : '48px')
+      }
+    }
   })
 
-  test('/story deep link lands on its panel; Next pushes and snaps to the next one', async ({ page }) => {
+  for (const { view, ids } of MOBILE_ROUTES) {
+    test(`(2) /${view}: every li / p / foot is fully readable at some 100px wheel step; the hash tracks the 40% band`, async ({ page, viewport }) => {
+      mobileOnly(viewport!.width)
+      await page.goto(`/#/${view}/${ids[0]}`)
+      await expect(page).toHaveURL(new RegExp(`#/${view}/${ids[0]}$`))
+      await page.locator('.panel').last().waitFor()
+      // every readable block, keyed `panel:index`
+      const keys: string[] = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>('.panel')].flatMap((panel) =>
+          [...panel.querySelectorAll<HTMLElement>('li, p, .panel__foot')]
+            .filter((el) => el.getClientRects().length > 0 && el.offsetHeight > 0)
+            .map((el, i) => `${panel.id}:${i}`),
+        ),
+      )
+      expect(keys.length).toBeGreaterThan(20)
+      const seen = new Set<string>()
+      const mismatches: string[] = []
+      await page.mouse.move(viewport!.width / 2, viewport!.height / 2)
+      await page.evaluate(() => scrollTo(0, 0))
+      await settled(page)
+      let lastY = -1
+      for (let step = 0; step < 200; step++) {
+        const { top, bottom } = await readingWindow(page)
+        const visible: string[] = await page.evaluate(
+          ({ top, bottom }) =>
+            [...document.querySelectorAll<HTMLElement>('.panel')].flatMap((panel) =>
+              [...panel.querySelectorAll<HTMLElement>('li, p, .panel__foot')]
+                .filter((el) => el.getClientRects().length > 0 && el.offsetHeight > 0)
+                .map((el, i) => ({ key: `${panel.id}:${i}`, r: el.getBoundingClientRect() }))
+                .filter(({ r }) => r.top >= top - 0.5 && r.bottom <= bottom + 0.5)
+                .map(({ key }) => key),
+            ),
+          { top, bottom },
+        )
+        for (const k of visible) seen.add(k)
+        const band = await panelsAtBand(page)
+        const hash = await page.evaluate(() => location.hash)
+        if (band.length && !band.some((id) => hash === `#/${view}/${id}`)) mismatches.push(`y=${await page.evaluate(() => scrollY)}: band=${band.join('|')} hash=${hash}`)
+        const y = await page.evaluate(() => scrollY)
+        if (y === lastY) break // the end of the document
+        lastY = y
+        await page.mouse.wheel(0, WHEEL_STEP)
+        await settled(page)
+      }
+      const missing = keys.filter((k) => !seen.has(k))
+      expect(missing, `never fully inside the reading window on /${view}`).toEqual([])
+      expect(mismatches, 'hash ≠ the panel at the 40% band').toEqual([])
+    })
+  }
+
+  test('(3) a 200px touch drag stops where the finger lifts: no drift, no hash change', async ({ page, viewport }) => {
+    mobileOnly(viewport!.width)
+    // Input.dispatchTouchEvent is CDP: every project is Chromium (R129)
+    const cdp = await page.context().newCDPSession(page)
+    const x = viewport!.width / 2
+    for (const [view, id] of [['work', 'kaufland'], ['work', 'gis'], ['story', 'forty'], ['story', 'prove-it']] as const) {
+      await page.goto(`/#/${view}/${id}`)
+      await expect(page).toHaveURL(new RegExp(`#/${view}/${id}$`))
+      await settled(page)
+      const before = await page.evaluate(() => scrollY)
+      // 20 × 10px, a held finger before the lift: a drag, not a fling
+      const y0 = viewport!.height * 0.75
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] })
+      for (let i = 1; i <= 20; i++) {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 - i * 10 }] })
+        await page.waitForTimeout(30)
+      }
+      await page.waitForTimeout(150)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      const release = await page.evaluate(() => ({ y: scrollY, hash: location.hash }))
+      expect(release.y - before, `${view}/${id}: the drag scrolled`).toBeGreaterThan(150)
+      await page.waitForTimeout(1000)
+      const settle = await page.evaluate(() => ({ y: scrollY, hash: location.hash }))
+      expect(Math.abs(settle.y - release.y), `${view}/${id}: drift after release`).toBeLessThanOrEqual(2)
+      expect(settle.hash, `${view}/${id}: hash changed after release`).toBe(release.hash)
+      // the designer's rule: two screenshots 1s apart are pixel-identical
+      const a = await page.screenshot({ animations: 'disabled' })
+      await page.waitForTimeout(1000)
+      const b = await page.screenshot({ animations: 'disabled' })
+      expect(a.equals(b), `${view}/${id}: the page moved between two screenshots 1s apart`).toBe(true)
+    }
+  })
+
+  test('(4) regression: /story/forty + one 100px wheel step keeps forty and PART 05 / 08', async ({ page, viewport }) => {
+    mobileOnly(viewport!.width)
     await page.goto('/#/story/forty')
-    await page.waitForTimeout(300)
+    await expect(page).toHaveURL(/#\/story\/forty$/)
+    await settled(page)
     const top = await page.locator('#forty').evaluate((el) => el.getBoundingClientRect().top)
     expect(Math.abs(top - 88)).toBeLessThanOrEqual(1)
     await expect(page.locator('.story__header')).toContainText('PART 05 / 08')
-    await page.locator('#forty .panel__next').click()
-    await expect(page).toHaveURL(/#\/story\/millions$/)
-    await page.waitForTimeout(500)
-    const next = await page.locator('#millions').evaluate((el) => el.getBoundingClientRect().top)
-    expect(Math.abs(next - 88)).toBeLessThanOrEqual(1)
+    await page.mouse.move(viewport!.width / 2, viewport!.height / 2)
+    await page.mouse.wheel(0, 100)
+    await settled(page)
+    await page.waitForTimeout(200)
+    await expect(page).toHaveURL(/#\/story\/forty$/)
+    await expect(page.locator('.story__header')).toContainText('PART 05 / 08')
   })
 
-  test('/work: header block first, then role panels as snap areas', async ({ page }) => {
+  test('(5) every Next control and ↳ Part link is ≥ 44px tall', async ({ page, viewport }) => {
+    mobileOnly(viewport!.width)
+    for (const { view, ids } of MOBILE_ROUTES) {
+      await page.goto(`/#/${view}`)
+      await expect(page).toHaveURL(new RegExp(`#/${view}/${ids[0]}$`))
+      // the previous view's panels are still in the DOM while the next chunk loads: wait for THIS view's
+      const stack = view === 'story' ? '.story__parts' : '.work__main'
+      await expect(page.locator(`${stack} .panel`)).toHaveCount(ids.length)
+      const heights = await page.locator(`${stack} .panel__next, ${stack} .role__chapter`).evaluateAll((els) =>
+        els.map((el) => ({ text: el.textContent!.trim(), h: el.getBoundingClientRect().height })),
+      )
+      expect(heights.length).toBeGreaterThan(0)
+      for (const { text, h } of heights) expect(h, `${view}: "${text}"`).toBeGreaterThanOrEqual(44)
+    }
+  })
+
+  test('deep links land the panel under the sticky chrome; Next pushes to the next one', async ({ page, viewport }) => {
+    mobileOnly(viewport!.width)
+    for (const [view, id] of [['work', 'kaufland'], ['work', 'gis'], ['work', roles[roles.length - 1]!.id], ['story', 'forty'], ['story', 'prove-it'], ['story', 'ending']] as const) {
+      await page.goto(`/#/${view}/${id}`)
+      await expect(page).toHaveURL(new RegExp(`#/${view}/${id}$`))
+      await settled(page)
+      await page.waitForTimeout(200)
+      const { top } = await readingWindow(page)
+      const panelTop = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top)
+      expect(Math.abs(panelTop - top), `${view}/${id} lands at ${panelTop}, chrome ends at ${top}`).toBeLessThanOrEqual(1)
+      await expect(page, `${view}/${id}: the IO rewrote the landing`).toHaveURL(new RegExp(`#/${view}/${id}$`))
+    }
+    await page.goto('/#/story/forty')
+    await settled(page)
+    await page.locator('#forty .panel__next').click()
+    await expect(page).toHaveURL(/#\/story\/millions$/)
+    await settled(page)
+    const next = await page.locator('#millions').evaluate((el) => el.getBoundingClientRect().top)
+    expect(Math.abs(next - 88)).toBeLessThanOrEqual(1)
+    await expect(page.locator('.story__header')).toContainText('PART 06 / 08')
+    // /work: the header block is the in-flow page head, no longer a snap area
     await page.goto('/#/work')
     await expect(page.locator('.work__head')).toBeInViewport()
-    await expect(page.locator('.panel')).toHaveCount(roles.length)
-    await page.goto('/#/work/navatec')
-    await page.waitForTimeout(300)
-    const top = await page.locator('#navatec').evaluate((el) => el.getBoundingClientRect().top)
-    expect(Math.abs(top - 48)).toBeLessThanOrEqual(1)
+    await expect(page.locator('.work__head')).toHaveCSS('scroll-snap-align', 'none')
+  })
+
+  test('landscape (≥769 wide): the desktop deck, the page does not scroll', async ({ page, viewport }) => {
+    test.skip(viewport!.width < 769, 'portrait phones are the mobile scroll')
+    await page.goto('/#/story/forty')
+    await expect(page).toHaveURL(/#\/story\/forty$/)
+    await expect(page.locator('.deck .panel')).toHaveCount(1)
+    await expect(page.locator('.story__parts')).toHaveCount(0)
+    expect(await page.evaluate(() => document.documentElement.scrollHeight - innerHeight)).toBeLessThanOrEqual(0)
   })
 })
 

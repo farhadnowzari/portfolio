@@ -2,7 +2,7 @@
 // StoryView.vue — the eight parts + ending as a deck (design v8, R76/R80: one chapter per screen).
 // Desktop (≥769): useDeck owns `current`; wheel / keys / swipe → router.replace, rail / Next →
 // router.push; the route drives the one mounted panel inside <Transition name="push">. Mobile
-// (<769): native document scroll-snap, `useCurrentSection`'s IO drives the PART header + ProgressBar
+// (<769, R123): a plain document scroll, `useCurrentSection`'s IO drives the PART header + ProgressBar
 // and replaces the route. The URL is always a panel: `/story/radio` … `/story/together`, `/story/ending`.
 // R91: every panel is a lazy chunk (panels/story.ts); the next one is prefetched on arrival, a rail
 // item's on hover, so the push never waits on the network.
@@ -50,7 +50,7 @@ function nextTo(id: string): string | undefined {
 
 // R91: the deck renders once the landing panel's chunk is in (desktop: one panel; mobile: all nine
 // are on the page, so all nine), so the first render is synchronous: a deep link lands with no push,
-// the mobile scroll finds its snap area. Then the NEXT panel's chunk is fetched the moment a panel
+// the mobile scroll finds its panel. Then the NEXT panel's chunk is fetched the moment a panel
 // arrives, so a step never waits on the network; a hovered rail item warms its chapter for the jump.
 void Promise.all((deck.isDesktop.value ? [current.value as StoryPanelId] : deckIds).map((id) => storyPanel(id).prefetch())).then(() => {
   ready.value = true
@@ -147,7 +147,7 @@ onUnmounted(() => {
         </Transition>
       </div>
 
-      <!-- mobile: nine snap areas on the document scroller -->
+      <!-- mobile: nine panels on the document scroller (R123: plain scroll, no snap) -->
       <div
         v-else-if="ready"
         class="story__parts"

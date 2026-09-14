@@ -11,7 +11,7 @@
 // inner panel can consume natively (§1h, a panel taller than the stage) is left alone, and marks the
 // gesture consumed, so scrolling to a panel's end never steps in the same motion.
 //
-// Mobile (<769) does none of this: native document scroll-snap (§1f), `useCurrentSection`'s IO.
+// Mobile (<769) does none of this: a plain document scroll (R123), `useCurrentSection`'s IO.
 import { computed, onMounted, onUnmounted, ref, watch, type Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 

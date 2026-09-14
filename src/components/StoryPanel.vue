@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // StoryPanel.vue — one chapter of `/story` on the `/work` skeleton (design v10, R113/R117). Used by both
 // deck modes: on desktop the one mounted panel inside the deck's <Transition>, on mobile one of nine
-// stacked snap areas. R91: the renderer; `part` is the index row (story.ts), `content` the chapter's
+// stacked panels on the document scroll (R123). R91: the renderer; `part` is the index row (story.ts), `content` the chapter's
 // own chunk (data/story/<id>.ts), bound by panels/story.ts.
 //
 // v10: RolePanel's grid. Row 1 = the 640 column; row 2 = the foot row (`↓ Next chapter` left, `01 / 08`

@@ -2,8 +2,8 @@
 // WorkView.vue — CV mirrored (plot v4 §4), rebuilt as a deck per design v8 §3 (R76/R80): a compact
 // header above the deck (R105 / r16 note: in the deck's own 640 column, not across the rail; R84: no
 // CV button, the topbar has one), then one role per screen. Desktop: useDeck + the year-range rail (R77 spaced form, employer as
-// caption). Mobile: the header is its own snap area above the five role panels; no rail, no progress
-// bar. The BOM grid left for `/skills`: no bars, no since-years, no role counts anywhere on this page.
+// caption). Mobile (R123): a plain document scroll, the header in flow above the five role panels;
+// no rail, no progress bar. The BOM grid left for `/skills`: no bars, no since-years, no role counts anywhere on this page.
 // R91: every role panel is a lazy chunk (panels/work.ts), the next one prefetched on arrival.
 import { computed, onMounted, onUnmounted, ref, watch, type ComponentPublicInstance } from 'vue'
 import { profile } from '../data/profile'
@@ -137,7 +137,7 @@ onUnmounted(() => {
         </Transition>
       </div>
 
-      <!-- mobile: header + five snap areas on the document scroller -->
+      <!-- mobile: header + five panels on the document scroller (R123: plain scroll, no snap) -->
       <div
         v-else-if="ready"
         class="work__main"
@@ -160,14 +160,13 @@ onUnmounted(() => {
   padding-bottom: var(--bottom-h);
 }
 
-// mobile: the header block is the first snap area (natural height) above the role panels.
+// mobile (R123): the header block is the in-flow page head (natural height) above the role panels.
 .work__head {
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 24px 16px 16px;
   border-bottom: 1px dashed var(--trace);
-  scroll-snap-align: start;
 }
 
 // r16 note: the lead balances to two lines ("… Engineer." / "I build …") instead of a widow.

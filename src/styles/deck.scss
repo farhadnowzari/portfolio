@@ -2,8 +2,9 @@
 //
 // Desktop (≥769): a JS deck (useDeck). Fixed-height stage, one panel mounted at a time (+ the
 // outgoing one during the push), the route drives the panel, the page never scrolls.
-// Mobile (<769): native document scroll-snap, each panel a viewport-tall snap area, no JS gesture
-// layer (§1f). `html.deck-snap` is toggled by the two views while they are mounted.
+// Mobile (<769): a plain document scroll (R123): natural panel heights, a dashed rule between
+// panels, no snap, no JS gesture layer. `html.deck-snap` / `.deck-snap--story` are toggled by the two
+// views while they are mounted and only carry `--story-head` (the 40px sticky PART header on /story).
 
 // ── Desktop stage (§1b) ──────────────────────────────────────────────────────────────────────────
 @media (min-width: 769px) {
@@ -60,43 +61,51 @@
   }
 }
 
-// ── Mobile: native snap on the document scroller (§1f) ──────────────────────────────────────────
+// ── Mobile: plain document scroll (R123) ────────────────────────────────────────────────────────
+// No `scroll-snap-*` anywhere, no viewport-tall panels: the scroller is the document, the panels
+// are as tall as their content, and the fixed chrome is accounted for once (the document's
+// `padding-bottom: var(--bottom-h)` in the views, `scroll-margin-top` here for the deep links).
 @media (max-width: 768px) {
-  html.deck-snap {
-    scroll-snap-type: y mandatory;
-    // --story-head = 40px on /story (the sticky PART header), 0 on /work; the snapport also ends
-    // above the fixed bottom bar, so a panel taller than the viewport (§1h) can rest with its
-    // pinned Next control fully visible, not under the bar.
-    scroll-padding-top: calc(var(--top-h) + var(--story-head, 0px));
-    scroll-padding-bottom: var(--bottom-h);
-  }
-
   html.deck-snap--story {
     --story-head: 40px;
   }
 
   .panel {
-    // svh on purpose: the panel must not resize when the URL bar collapses mid-swipe
-    min-height: calc(100svh - var(--top-h) - var(--story-head, 0px) - var(--bottom-h));
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
     display: flex;
     flex-direction: column;
-    padding: 16px 16px 12px;
+    padding: 32px 16px 40px;
+    // "between panels": the last one has none
+    border-bottom: 1px dashed var(--trace);
+    // `router.push` / a deep link lands the numeral under the sticky chrome (topbar + the PART
+    // header on /story), never under it
+    scroll-margin-top: calc(var(--top-h) + var(--story-head, 0px));
   }
 
-  // pinned to the panel's bottom when the panel is viewport-height; flows after the content when
-  // the panel is taller (§1h: the taller area scrolls within by snap spec)
+  .panel:last-child {
+    border-bottom: 0;
+  }
+
+  // Next / the foot row flow after the content (no `margin-top: auto`: nothing is pinned)
   .panel__next,
   .panel__foot {
-    margin-top: auto;
     padding-top: 16px;
   }
 
-  // R105: on /work the Next control sits inside the foot row; the row is what is pinned
+  // R105: on /work the Next control sits inside the foot row; the row carries the spacing
   .panel__foot .panel__next {
-    margin-top: 0;
     padding-top: 0;
+  }
+
+  // R123: the ending alone keeps a viewport-tall floor, so the story ends on an empty field
+  .panel.ending {
+    min-height: calc(100svh - var(--top-h) - 40px - var(--bottom-h));
+  }
+
+  // The last role on /work gets the same floor, for the same reason the ending has one: a 300px
+  // last panel can never reach the top of the scroller, so `/work/freelance` could not land under
+  // the topbar and the 40% band (useCurrentSection) would still be reading the role above it.
+  .work__main .panel:last-child {
+    min-height: calc(100svh - var(--top-h) - var(--bottom-h));
   }
 }
 

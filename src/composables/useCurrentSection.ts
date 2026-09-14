@@ -4,7 +4,7 @@
 // from the /story-only `useCurrentPart` (design v7 §3) so /work runs the exact same IO with
 // `{ routeName: 'work', param: 'section' }`.
 //
-// Design v8 §1: MOBILE ONLY. On desktop the deck (useDeck) owns `current` and the page never scrolls,
+// Design v8 §1 / R123: MOBILE ONLY (the plain document scroll). On desktop the deck (useDeck) owns `current` and the page never scrolls,
 // so the IO is connected only while `active` is true (the view passes its `!isDesktop`), and
 // reconnects when the breakpoint flips and the mobile DOM mounts.
 import { nextTick, onMounted, onUnmounted, ref, watch, type Ref } from 'vue'
@@ -40,12 +40,16 @@ export function useCurrentSection(ids: readonly string[], options: CurrentSectio
           const id = entry.target.id
           if (!id || id === current.value) continue
           current.value = id
-          router.replace({ name: options.routeName, params: { [options.param]: id } }).then(() => {
-            history.replaceState({ ...history.state, fromScroll: true }, '')
-          })
+          // `state.fromScroll` travels WITH the replace (as useDeck.normalise does), so it is in
+          // `history.state` before scrollBehavior runs; the post-hoc replaceState raced it by one
+          // microtask, and on R123's plain scroll a lost race is a visible jump after the finger lifts.
+          router.replace({ name: options.routeName, params: { [options.param]: id }, state: { fromScroll: true } })
         }
       },
-      { rootMargin: '-48px 0px -55% 0px' },
+      // R124: a ~1px band at 40% of the viewport. The panels are contiguous (no margins), so exactly
+      // one intersects it at any scroll position: no head offset, no order dependence, no two panels
+      // reporting at once.
+      { rootMargin: '-40% 0px -59.9% 0px' },
     )
     for (const id of ids) {
       const el = document.getElementById(id)
