@@ -1,0 +1,55 @@
+// fonts.scss — 4 self-hosted woff2 (subset via scripts/fonts/subset.py) + metric-matched fallbacks.
+// Same @font-face rules serve the static card (index.html) and the mounted app — one swap, no skeleton.
+
+@font-face {
+  font-family: 'Fraunces Text';
+  src: url('/fonts/fraunces-text.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fraunces Display';
+  src: url('/fonts/fraunces-display.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plex Mono';
+  src: url('/fonts/plex-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plex Mono';
+  src: url('/fonts/plex-mono-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Metric-matched fallbacks — approximate ascent/descent/line-gap/size-adjust so FOUT causes no
+// visible reflow. Georgia backs Fraunces (both are wide old-style serifs); Courier New backs Plex
+// Mono (both are monospace with similar advance widths).
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia');
+  size-adjust: 106%;
+  ascent-override: 88%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plex Mono Fallback';
+  src: local('Courier New');
+  size-adjust: 92%;
+  ascent-override: 100%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}

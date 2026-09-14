@@ -1,0 +1,17 @@
+// tokens.scss — the seven custom properties (design v4 §2). Light only.
+:root {
+  --board: #F6F3EC;
+  --board-2: #ECE7DB;
+  --ink: #16181D;
+  --ink-2: #5B5F6B;
+  --trace: #C9C3B6;
+  --copper: #A84A22;
+  --solder: #6E2F14;
+
+  --font-fraunces-text: 'Fraunces Text', 'Fraunces Fallback', Georgia, serif;
+  --font-fraunces-display: 'Fraunces Display', 'Fraunces Fallback', Georgia, serif;
+  --font-mono: 'Plex Mono', 'Plex Mono Fallback', 'Courier New', Menlo, monospace;
+
+  --top-h: 48px;
+  --bottom-h: calc(56px + env(safe-area-inset-bottom, 0px));
+}

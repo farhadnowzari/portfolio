@@ -2,34 +2,138 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio | Farhad Nowzari</title>
-    <meta name="description" content="An enthusiastic Software Developer called Farhad who is never tired of learning new topics" />
-    <meta name="keywords" content="Farhad Nowzari, Farhad, Nowzari, Software Developer, Web Developer, Frontend Developer, Backend Developer, Fullstack Developer, React Developer, Node Developer, JavaScript Developer, TypeScript Developer, HTML Developer, CSS Developer, SASS Developer, SCSS Developer, Webpack Developer, Vite Developer, Gatsby Developer, Next Developer, Express Developer, MongoDB Developer, MySQL Developer, PostgreSQL Developer, SQLite Developer, Firebase Developer, AWS Developer, Azure Developer, Netlify Developer, Vercel Developer, Heroku Developer, GitHub Developer, GitLab Developer, Bitbucket Developer, Docker Developer, Kubernetes Developer, Jenkins Developer, Travis Developer, CircleCI Developer, Git Developer, NPM Developer, Yarn Developer, REST Developer, GraphQL Developer, WebSockets Developer, WebRTC Developer, PWA Developer, SPA Developer, SSR Developer, SSG Developer, MERN Developer, MEAN Developer, MEVN Developer, JAMstack Developer, Serverless Developer, Microservices Developer, Monolithic Developer, CI/CD Developer, TDD Developer, BDD Developer, DDD Developer, OOP"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- R96 / design v9 §7: the speaker, Part 01 (housing + driver + solder dot), copper on the cream tile. -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F6F3EC'/%3E%3Crect x='4' y='4.5' width='24' height='23' rx='2.5' fill='none' stroke='%23A84A22' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='6.5' fill='none' stroke='%23A84A22' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='2.2' fill='%23A84A22'/%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>Farhad Nowzari · Senior Backend / Full-Stack Engineer</title>
+    <meta name="description" content="Senior Backend / Full-Stack Engineer at Kaufland e-commerce. I build systems that survive traffic and pen tests. Go · NestJS · C# · Kafka · Kubernetes." />
     <meta name="author" content="Farhad Nowzari" />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Portfolio | Farhad Nowzari" />
-    <meta property="og:description" content="An enthusiastic Software Developer called Farhad who is never tired of learning new topics" />
+    <meta property="og:title" content="Farhad Nowzari · Senior Backend / Full-Stack Engineer" />
+    <meta property="og:description" content="I build systems that survive traffic and pen tests. How I got here. It started with a radio." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://farhadnowzari.github.io" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Portfolio | Farhad Nowzari" />
-    <meta name="twitter:description" content="An enthusiastic Software Developer called Farhad who is never tired of learning new topics" />
-    <meta name="twitter:url" content="https://farhadnowzari.github.io" />
-    <meta name="twitter:creator" content="@farhad_nowzari" />
-    <meta name="twitter:site" content="@farhad_nowzari" />
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Language" content="en" />
+    <meta property="og:site_name" content="Farhad Nowzari" />
+
+    <!-- Static card fonts, preloaded — same @font-face rules serve pre- and post-mount (fonts.scss). -->
+    <link rel="preload" href="/fonts/fraunces-text.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/fraunces-display.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/plex-mono-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!--
+      Deep-link guard (R49 / design v4 §10, option b): landing cold on a non-home hash would show
+      this static card for one round trip, then swap — hide it before first paint instead. Not a
+      prerender, not a framework: three lines, inline, gone the instant the app mounts a real view.
+    -->
+    <script>
+      if (location.hash && location.hash !== '#/') {
+        document.documentElement.classList.add('deep')
+      }
+    </script>
+    <style>
+      .deep .home { display: none; }
+    </style>
   </head>
   <body lang="en">
-    <div id="app"></div>
+    <div id="app">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="topbar">
+      <a class="topbar__name t-mono" href="#/" aria-current="page">Farhad Nowzari</a>
+      <nav class="topbar__tabs" aria-label="Primary">
+        <a href="#/story">Story</a>
+        <a href="#/work">Work</a>
+        <a href="#/skills">Skills</a>
+        <a href="#/community">Community</a>
+      </nav>
+      <div class="topbar__actions">
+        <a class="btn btn--primary" href="/assets/Farhad Nowzari - 2026-CV.pdf" download="Farhad Nowzari - 2026-CV.pdf" title="Farhad Nowzari, CV (PDF, 2026)">
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2 V10" /><path d="M4 6.5 L8 10.5 L12 6.5" /><path d="M3 14 H13" /></svg>
+          CV
+        </a>
+        <a class="btn" href="mailto:fdn.sharp@gmail.com" title="Email Farhad Nowzari">Say hi</a>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="home">
+        <div class="card static-card">
+          <div class="card__head">
+            <h1 class="t-name">Farhad Nowzari</h1>
+            <p class="t-title">Senior Backend / Full-Stack Engineer</p>
+            <p class="t-employer">at Kaufland e-commerce</p>
+          </div>
+          <p class="t-promise">I build systems that survive traffic and pen tests.</p>
+          <div class="card__head">
+            <p class="t-location">Stuttgart · in German teams since 2016</p>
+            <div class="chip-row" aria-label="Stack of this part">
+              <span class="chip">Go</span><span class="chip">NestJS</span><span class="chip">C#</span><span class="chip">Kafka</span><span class="chip">Kubernetes</span>
+            </div>
+          </div>
+          <div class="card__buttons">
+            <a class="btn btn--primary btn--block" href="/assets/Farhad Nowzari - 2026-CV.pdf" download="Farhad Nowzari - 2026-CV.pdf" title="Farhad Nowzari, CV (PDF, 2026)">
+              <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2 V10" /><path d="M4 6.5 L8 10.5 L12 6.5" /><path d="M3 14 H13" /></svg>
+              CV
+            </a>
+            <div class="btn-row">
+              <a class="btn" href="mailto:fdn.sharp@gmail.com" title="Email Farhad Nowzari">Email</a>
+              <a class="btn" href="https://linkedin.com/in/farhad-nowzari-94060699" title="Farhad Nowzari on LinkedIn" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+              <a class="btn" href="https://github.com/farhadnowzari" title="Farhad Nowzari (farhadnowzari) on GitHub" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a class="btn" href="https://www.youtube.com/@nowzarifarhad" title="Farhad Nowzari, YouTube channel (@nowzarifarhad)" target="_blank" rel="noopener noreferrer">YouTube</a>
+            </div>
+          </div>
+          <p class="card__contact">
+            <a href="mailto:fdn.sharp@gmail.com" title="Email Farhad Nowzari">fdn.sharp@gmail.com</a>
+            <a href="https://linkedin.com/in/farhad-nowzari-94060699" title="Farhad Nowzari on LinkedIn" target="_blank" rel="noopener noreferrer">linkedin.com/in/farhad-nowzari-94060699</a>
+          </p>
+        </div>
+        <hr class="rule" aria-hidden="true" />
+        <div class="below-card">
+          <div class="axis">
+            <a class="hook t-hook" href="#/story">
+              <span class="glyph glyph--lead glyph--copper" aria-hidden="true">↓</span><span class="hook__text">How I got here. At <span class="hook__num">7</span>, it started with a radio.</span>
+            </a>
+            <ul class="peek">
+              <li class="peek__item">
+                <a href="#/story/radio">
+                  <span class="peek__num t-mono" aria-hidden="true">7</span>
+                  <span class="peek__title">The radio</span>
+                  <span class="peek__caption" aria-hidden="true">age 7</span>
+                  <span class="sr-only">Seven years old</span>
+                </a>
+              </li>
+              <li class="peek__item">
+                <a href="#/story/friend">
+                  <span class="peek__num t-mono" aria-hidden="true">2009</span>
+                  <span class="peek__title">My friend was code</span>
+                  <span class="peek__caption" aria-hidden="true">started university</span>
+                  <span class="sr-only">Bachelor, 2009 to 2015</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="home__diagram" aria-hidden="true">The exploded view draws in here on desktop.</div>
+      </div>
+    </main>
+    <nav class="bottombar" aria-label="Primary">
+      <a class="bottombar__item" href="#/story">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 4 H13" /><path d="M5 8 H15" /><path d="M3 12 H13" /></svg>
+        <span>Story</span>
+      </a>
+      <a class="bottombar__item" href="#/work">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 3 V13" /><path d="M3 5 H11" /><path d="M3 11 H14" /></svg>
+        <span>Work</span>
+      </a>
+      <a class="bottombar__item" href="#/skills">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 3 H12 V13 H4 Z" /><path d="M2 6 H4" /><path d="M2 10 H4" /><path d="M12 6 H14" /><path d="M12 10 H14" /></svg>
+        <span>Skills</span>
+      </a>
+      <a class="bottombar__item" href="#/community">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 3 L13 8 L4 13 Z" /></svg>
+        <span>Community</span>
+      </a>
+    </nav>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

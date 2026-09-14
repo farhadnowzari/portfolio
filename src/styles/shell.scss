@@ -1,0 +1,388 @@
+// shell.scss — top bar, bottom bar, home card + hook + peek + axis (design v4 §3, §4.1).
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--top-h);
+  padding-top: env(safe-area-inset-top);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-inline: 16px;
+  background: var(--board);
+  border-bottom: 1px solid var(--trace);
+}
+
+.topbar__name {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__name[aria-current='page'] {
+  color: var(--copper);
+}
+
+@media (min-width: 769px) {
+  .topbar__name[aria-current='page'] {
+    border-bottom: 2px solid var(--copper);
+    padding-bottom: 2px;
+  }
+}
+
+.topbar__tabs {
+  display: none;
+  gap: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.topbar__tabs a {
+  padding-block: 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.topbar__tabs a[aria-current='page'] {
+  color: var(--copper);
+  border-color: var(--copper);
+}
+
+.topbar__actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.topbar__actions .btn {
+  // Ruling 59: design-v4 §4.0 — "Both buttons 44px tall; [CV] 66px filled, [Say hi] 78px outline"
+  // — inherit .btn's 44px min-height, tune padding to land on the two widths the spec actually
+  // gives (host feedback, round 9: the narrower ad-hoc padding read as too boxy/tall for its width).
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+@media (min-width: 769px) {
+  // §4: 56px bar / 40px buttons, 8px clearance — was 48px bar with buttons stretched to a shared
+  // 44px min-height regardless of label width (host: "stretched to the full height... utterly ugly").
+  :root { --top-h: 56px; }
+  .topbar { padding-inline: 32px; }
+  .topbar__tabs { display: flex; }
+  .topbar__actions { gap: 12px; }
+  .topbar__actions .btn {
+    min-height: 40px;
+    padding: 0 18px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1400px) {
+  // one spacing system with §1's 40px column-gap.
+  .topbar { padding-inline: 40px; }
+}
+
+.bottombar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  height: var(--bottom-h);
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  background: var(--board);
+  border-top: 1px solid var(--trace);
+}
+
+.bottombar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.bottombar__item[aria-current='page'] {
+  color: var(--copper);
+}
+
+@media (min-width: 769px) {
+  .bottombar { display: none; }
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  // Blocker fix: a real `height`, not `min-height` — the budget table (design v4 §4.1) is an
+  // exact accounting of `svh − top-h − bottom-h`; `min-height` let the box grow past that and
+  // defeated `.peek`'s `overflow: hidden`, so content bled under the fixed bottom bar. `overflow:
+  // hidden` here is the safety net: nothing this box's children do can bleed past the frame.
+  height: calc(100svh - var(--top-h) - var(--bottom-h));
+  overflow: hidden;
+  padding: 16px;
+}
+
+@media (min-width: 769px) {
+  // §1 — hard requirement: hook is part of the card column, not a third floating block.
+  // grid-template-areas fuses card + hook into one 440px column; diagram gets its own `1fr`
+  // column. `align-items: start` kills the vertical-center drift (was: diagram centered in a
+  // leftover flex box sized by a near-full-viewport `min-height`, now deleted entirely).
+  .home {
+    display: grid;
+    // R99: 440 per design v5 §1 (R95 and its 520 column are gone for good; no image of the host ships).
+    grid-template-columns: 440px 1fr;
+    // `auto 1fr`, not the two bare `auto` rows implied by grid-template-areas alone: `.home__diagram`
+    // is a genuine row-SPANNING item (its area name appears in both rows) and CSS Grid's own spec
+    // (§11.5) inflates every content-sized track a spanning item touches to help fit it — with two
+    // `auto` rows that meant the ~180px-too-tall diagram was quietly stealing height from the card's
+    // row too, shoving `.below-card` down into dead space below the card's real content (the
+    // ~180px-dead-space bug). A track with a flexible (`fr`) max sizing function is explicitly
+    // excluded from that spanning-item growth step (§11.5's own carve-out) — so making row 2 `1fr`
+    // takes the diagram out of row 1's sizing entirely: row 1 sizes to the card alone, row 2 (and
+    // the diagram past it) absorbs whatever height the diagram actually needs.
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'card    diagram'
+      'hook    diagram';
+    column-gap: 64px;
+    row-gap: 0;
+    align-items: start;
+    // design v8 §4 (R79): no scrolling at any desktop size. A real height, overflow hidden; the
+    // drawing is sized from the HEIGHT (`.home__diagram` below) and the card column gives in a fixed
+    // order (padding → type clamp → peek rows 2 → 1 → 0) when the stage is short.
+    height: calc(100svh - var(--top-h));
+    overflow: hidden;
+    --home-pad: 64px;
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-block: 40px 24px;
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 769px) and (max-height: 799px) {
+  // §4 give-order steps 1 + 2: padding 40/24 → 24/16, then the type clamp and the card gap.
+  .home {
+    padding-block: 24px 16px;
+    --home-pad: 40px;
+  }
+  .home .card { gap: 12px; }
+  .home .t-name { font-size: 40px; }
+  .home .t-promise { font-size: 20px; }
+}
+
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Design v4 §4.1's mobile wireframe: "[Email] [in] [GitHub] [YouTube] — 44px chips, 4 across."
+// The base `.btn` padding (16px) makes 4 outline buttons wrap to 2 rows at 400px width, adding
+// ~52px the mobile card budget doesn't have (feeds the same blocker as the contact-line fix above).
+// Tighter padding, scoped to this one row, keeps the 44px height and gets all 4 on one line.
+.card__buttons .btn-row .btn {
+  padding: 0 8px;
+  font-size: 14px;
+}
+
+.card__contact {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--copper);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__contact a {
+  // Two 13px lines, 2px apart, budgeted at 44px *combined* (design v4 §4.1's mobile wireframe: "44
+  // mono 13, 2 lines"), not 44px each — a real per-line min-height:44px flex box (what this rule
+  // used to be) blew that budget by ~56px and pushed the hook/peek past the bottom bar (Noor's
+  // blocker #1). Same fix as the ledger's stretched-link: keep the visible line compact, grow the
+  // *tap area* into the surrounding whitespace with an absolutely-positioned hit layer instead of
+  // reserving 44px of flow height.
+  position: relative;
+  display: inline-block;
+}
+
+.card__contact a::after {
+  content: '';
+  position: absolute;
+  inset: -14px 0;
+}
+
+.card__contact a:hover {
+  color: var(--solder);
+}
+
+.below-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  // §5: the copper axis moves here (CSS-guaranteed flex:1 fill of `.home`'s remaining height) —
+  // off `.axis`, whose block-size depended on AxisLine's ResizeObserver measurement and could lag
+  // a frame behind, opening a gap at the bottom at 375×550. `.below-card` fills by pure CSS
+  // flex-grow, so the line reaches `.home`'s bottom edge at every height, including peek=0.
+  border-inline-start: 2px solid var(--copper);
+  padding-inline-start: 14px;
+}
+
+.axis {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  // min-height: 0, not 44px — a flex item's default `min-height: auto` refuses to shrink below
+  // its content's intrinsic size, which is exactly why `.peek`'s `overflow: hidden` never engaged
+  // (the box just grew to fit both peek rows instead of cropping). The axis still always reaches
+  // the bottom bar because it's `flex: 1` in a now height-bounded `.home` — the min-height:0 here
+  // only removes the floor that was fighting that.
+  min-height: 0;
+}
+
+.hook {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  // Assertion (e), design v4 §4.1: hook bottom must always be on screen — never let it shrink,
+  // only the peek list below it gives up space.
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.hook__num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--copper);
+  font-size: 1em;
+}
+
+.peek {
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  // `max-height`, not `height` — `.peek` is `flex: 1` (flex-basis: 0%), so a plain `height` is
+  // never consulted for sizing (flex-grow just fills available space and ignores it); `max-height`
+  // is what flexbox actually clamps a grown item against. Rounded down to a whole-44px-row height
+  // by AxisLine's ResizeObserver (JS) so peek is always 0/1/2 *whole* rows, never a row sliced
+  // mid-glyph (design v4 §4.1/§11) — this is the no-JS fallback for the instant after mount / if
+  // the observer hasn't measured yet.
+  max-height: round(down, 100%, 44px);
+}
+
+.peek__item {
+  flex-shrink: 0;
+}
+
+.peek__item a {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 44px;
+}
+
+.peek__num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--copper);
+  flex-shrink: 0;
+}
+
+.peek__title {
+  font-family: var(--font-fraunces-text);
+  font-size: 15px;
+  // safety only — never truncates at ≥360 (302 ≤ 314 available with the caption, design v7 §4)
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// R70: the caption sits at the row's end like a dimension note — never fights the title for the
+// eye, and the 44px crop math stays exact. Mono 12 = the "section label" size the floor rule allows.
+.peek__caption {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+@media (max-height: 600px) {
+  .card { gap: 12px; }
+  // R50-b (design v4 changelog): "the rule row (16+1+12=29) becomes a 12px gap, no rule" — 12px
+  // total, not a 12px-tall element plus its own 6+6 margin (24px extra on top of that). That extra
+  // ~12px was eating into the exact budget that makes the hook fit at 375×550's compact viewport.
+  .rule { margin: 6px 0; border-top: 0; height: 0; }
+}
+
+.home__diagram {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .card { grid-area: card; }
+  // §1 hard requirement: the hook is the card's own closing line, not a third floating block —
+  // the dashed top border is the seam ("this is the card's last paragraph"), replacing `.rule`.
+  // v8 §4 step 3: `.below-card` stretches to fill row 2 (`1fr` of the now height-bounded `.home`)
+  // so `.peek`'s whole-row crop engages on desktop too (2 → 1 → 0 rows); the hook never gives.
+  .below-card {
+    display: flex;
+    grid-area: hook;
+    align-self: stretch;
+    min-height: 0;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--trace);
+    // desktop reads this seam, not the mobile copper axis (§5 is mobile-only).
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+  .rule { display: none; }
+  .home__diagram {
+    grid-area: diagram;
+    justify-self: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    // v8 §4: the drawing is sized from the stage HEIGHT (620/440 tall-per-wide), capped at 640:
+    // 1920×1080 → 640 · 1860×990 → 617 · 1400×900 → 553 · 1280×720 → 443. This box IS the drawing's
+    // width (the svg fills it), which makes it the container the caption rule below can query.
+    width: 100%;
+    max-width: min(640px, calc((100svh - var(--top-h) - var(--home-pad, 64px)) * 440 / 620));
+    min-width: 400px;
+    container: home-diagram / inline-size;
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+}
+
+// R85 (❓4 ruled): in-drawing captions hide when the drawing is narrower than 520px; at 9px they are
+// texture, not text. The peek rows and the /story rail carry the same captions.
+@container home-diagram (max-width: 519px) {
+  .exploded__caption { display: none; }
+}
